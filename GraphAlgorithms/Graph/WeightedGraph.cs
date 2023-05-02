@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GraphAlgorithms.Graph
 {
 
-    public partial class WeightedGraph
+    public partial class WeightedGraph<DataT>
     {
         #region Fields
 
@@ -32,7 +32,7 @@ namespace GraphAlgorithms.Graph
         /// <summary>
         /// Массив узлов
         /// </summary>
-        internal NodeWithWeightedEdges[] Nodes { get; set; }
+        internal NodeWithWeightedEdges<DataT>[] Nodes { get; set; }
 
         /// <summary>
         /// Индекс последнего добавленного узла в поле/массиве Nodes
@@ -59,8 +59,8 @@ namespace GraphAlgorithms.Graph
         public WeightedGraph()
         {
             NodeStep = NodeDefaultStep;
-            EdgeStep = NodeWithWeightedEdges.EdgeDefaultStep;
-            Nodes = new NodeWithWeightedEdges[NodeStep];
+            EdgeStep = NodeWithWeightedEdges<DataT>.EdgeDefaultStep;
+            Nodes = new NodeWithWeightedEdges<DataT>[NodeStep];
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace GraphAlgorithms.Graph
 
             NodeStep = nodeStep;
             EdgeStep = edgeStep;
-            Nodes = new NodeWithWeightedEdges[NodeStep];
+            Nodes = new NodeWithWeightedEdges<DataT>[NodeStep];
         }
 
         /// <summary>
@@ -99,13 +99,13 @@ namespace GraphAlgorithms.Graph
         /// Метод добавляет новый узел и возвращает его.
         /// </summary>
         /// <returns>Последний добавленный узел</returns>
-        public NodeWithWeightedEdges AddEmptyNode()
+        public NodeWithWeightedEdges<DataT> AddEmptyNode()
         {
 
             if ((_LastNodeIndex + 1) == Nodes.LongLength)
             {
-                NodeWithWeightedEdges[] oldNodes = Nodes;
-                NodeWithWeightedEdges[] newNodes = new NodeWithWeightedEdges[oldNodes.LongLength + NodeStep];
+                NodeWithWeightedEdges<DataT>[] oldNodes = Nodes;
+                NodeWithWeightedEdges<DataT>[] newNodes = new NodeWithWeightedEdges<DataT>[oldNodes.LongLength + NodeStep];
 
                 for (long i = 0; i < oldNodes.LongLength; i++)
                     newNodes[i] = oldNodes[i];
@@ -114,7 +114,7 @@ namespace GraphAlgorithms.Graph
             }
 
             _LastNodeIndex++;
-            Nodes[_LastNodeIndex] = new NodeWithWeightedEdges(_LastNodeIndex, EdgeStep);
+            Nodes[_LastNodeIndex] = new NodeWithWeightedEdges<DataT>(_LastNodeIndex, EdgeStep);
 
             return Nodes[_LastNodeIndex];
         }
@@ -125,7 +125,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="from">Начало связи</param>
         /// <param name="to">Конец связи</param>
         /// <returns>Созданная связь</returns>
-        public WeightedEdge[] AddEdge(NodeWithWeightedEdges from, NodeWithWeightedEdges to, long weight)
+        public WeightedEdge<DataT>[] AddEdge(NodeWithWeightedEdges<DataT> from, NodeWithWeightedEdges<DataT> to, long weight)
         {
             if (_LastNodeIndex < 1)
                 throw
@@ -155,7 +155,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="nodeIndex">Индекс узла</param>
         /// <returns>Узел</returns>
         /// <exception cref="GraphException">Генерируется, если входной индекс не существует в массиве узлов.</exception>
-        public NodeWithWeightedEdges GetNode(long nodeIndex)
+        public NodeWithWeightedEdges<DataT> GetNode(long nodeIndex)
         {
             if (nodeIndex > _LastNodeIndex || nodeIndex < 0)
                 throw
@@ -171,7 +171,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="edgeIndex">Индекс грани</param>
         /// <returns>Грань с заданными индексами</returns>
         /// <exception cref="GraphException">Генерируется, если входной индекс не существует в массиве узлов или рёбер.</exception>
-        public WeightedEdge GetEdge(long nodeIndex, long edgeIndex)
+        public WeightedEdge<DataT> GetEdge(long nodeIndex, long edgeIndex)
         {
             if (nodeIndex > _LastNodeIndex || nodeIndex < 0)
                 throw
@@ -228,8 +228,6 @@ namespace GraphAlgorithms.Graph
 
         #region Different methods
 
-        #region Different methods
-
         /// <summary>
         /// Метод возвращает массив, в котором представлен первый индес всеми узлами, второй индекс представлен всеми его исходящими рёбрами.
         /// </summary>
@@ -256,8 +254,6 @@ namespace GraphAlgorithms.Graph
 
             return result;
         }
-
-        #endregion
 
         #endregion
     }

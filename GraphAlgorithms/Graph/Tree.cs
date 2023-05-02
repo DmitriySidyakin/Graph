@@ -1,13 +1,14 @@
 ﻿using GraphAlgorithms.Graph.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public class Tree
+    public class Tree<DataT>
     {
         #region Fields
 
@@ -31,7 +32,7 @@ namespace GraphAlgorithms.Graph
         /// <summary>
         /// Массив узлов
         /// </summary>
-        internal NodeWithEdges[] Nodes { get; set; }
+        internal NodeWithEdges<DataT>[] Nodes { get; set; }
 
         /// <summary>
         /// Индекс последнего добавленного узла в поле/массиве Nodes
@@ -53,8 +54,8 @@ namespace GraphAlgorithms.Graph
         public Tree()
         {
             NodeStep = NodeDefaultStep;
-            EdgeStep = NodeWithEdges.EdgeDefaultStep;
-            Nodes = new NodeWithEdges[NodeStep];
+            EdgeStep = NodeWithEdges<DataT>.EdgeDefaultStep;
+            Nodes = new NodeWithEdges<DataT>[NodeStep];
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace GraphAlgorithms.Graph
 
             NodeStep = nodeStep;
             EdgeStep = edgeStep;
-            Nodes = new NodeWithEdges[NodeStep];
+            Nodes = new NodeWithEdges<DataT>[NodeStep];
         }
 
         /// <summary>
@@ -93,13 +94,13 @@ namespace GraphAlgorithms.Graph
         /// Метод добавляет новый узел и возвращает его.
         /// </summary>
         /// <returns>Последний добавленный узел</returns>
-        public NodeWithEdges AddEmptyNode()
+        public NodeWithEdges<DataT> AddEmptyNode()
         {
 
             if ((LastNodeIndex + 1) == Nodes.LongLength)
             {
-                NodeWithEdges[] oldNodes = Nodes;
-                NodeWithEdges[] newNodes = new NodeWithEdges[oldNodes.LongLength + NodeStep];
+                NodeWithEdges<DataT>[] oldNodes = Nodes;
+                NodeWithEdges<DataT>[] newNodes = new NodeWithEdges<DataT>[oldNodes.LongLength + NodeStep];
 
                 for (long i = 0; i < oldNodes.LongLength; i++)
                     newNodes[i] = oldNodes[i];
@@ -108,7 +109,7 @@ namespace GraphAlgorithms.Graph
             }
 
             LastNodeIndex++;
-            Nodes[LastNodeIndex] = new NodeWithEdges(LastNodeIndex, EdgeStep);
+            Nodes[LastNodeIndex] = new NodeWithEdges<DataT>(LastNodeIndex, EdgeStep);
 
             return Nodes[LastNodeIndex];
         }
@@ -119,7 +120,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="from">Начало связи</param>
         /// <param name="to">Конец связи</param>
         /// <returns>Созданная связь</returns>
-        public Edge AddEdge(NodeWithEdges from, NodeWithEdges to)
+        public Edge<DataT> AddEdge(NodeWithEdges<DataT> from, NodeWithEdges<DataT> to)
         {
             if(LastNodeIndex < 1)
                 throw
@@ -145,7 +146,7 @@ namespace GraphAlgorithms.Graph
         /// </summary>
         /// <param name="to">Узел на который направлена связь</param>
         /// <returns>true - если узел существует</returns>
-        public bool CheckNewEdge(NodeWithEdges to)
+        public bool CheckNewEdge(NodeWithEdges<DataT> to)
         {
             return !((from n in Nodes
                       where to.Id == n.Id
@@ -162,7 +163,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="nodeIndex">Индекс узла</param>
         /// <returns>Узел</returns>
         /// <exception cref="TreeException">Генерируется, если входной индекс не существует в массиве узлов.</exception>
-        public NodeWithEdges GetNode(long nodeIndex)
+        public NodeWithEdges<DataT> GetNode(long nodeIndex)
         {
             if (nodeIndex > LastNodeIndex || nodeIndex < 0)
                 throw
@@ -178,7 +179,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="edgeIndex">Индекс грани</param>
         /// <returns>Грань с заданными индексами</returns>
         /// <exception cref="GraphException">Генерируется, если входной индекс не существует в массиве узлов или рёбер.</exception>
-        public Edge GetEdge(long nodeIndex, long edgeIndex)
+        public Edge<DataT> GetEdge(long nodeIndex, long edgeIndex)
         {
             if (nodeIndex > LastNodeIndex || nodeIndex < 0)
                 throw
@@ -231,7 +232,7 @@ namespace GraphAlgorithms.Graph
 
         #region Different methods
 
-        public bool hasThisEdge(NodeWithEdges @from, NodeWithEdges to) {
+        public bool hasThisEdge(NodeWithEdges<DataT> @from, NodeWithEdges<DataT> to) {
             return (from n in Nodes
                    where n.Id == @from.Id
                    select n).Count() > 0;

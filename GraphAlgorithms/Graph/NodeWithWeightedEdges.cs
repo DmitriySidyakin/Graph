@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public class NodeWithWeightedEdges
+    public class NodeWithWeightedEdges<DataT>
     {
         /// <summary>
         /// Идентификатор (индекс) узла в графе
@@ -24,6 +25,11 @@ namespace GraphAlgorithms.Graph
         public long EdgeStep { get; set; }
 
         /// <summary>
+        /// Данные узла
+        /// </summary>
+        public DataT? Data { get; set; }
+
+        /// <summary>
         /// Индекс последней добавленной грани в поле/массив Edges
         /// </summary>
         internal long LastEdgeIndex { get; set; } = -1;
@@ -31,7 +37,7 @@ namespace GraphAlgorithms.Graph
         /// <summary>
         /// Массив рёбер
         /// </summary>
-        internal WeightedEdge[] WeightedEdges { get; set; }
+        internal WeightedEdge<DataT>[] WeightedEdges { get; set; }
 
         /// <summary>
         /// Количество граней
@@ -46,7 +52,7 @@ namespace GraphAlgorithms.Graph
 
             Id = id;
             EdgeStep = EdgeDefaultStep;
-            WeightedEdges = new WeightedEdge[EdgeStep];
+            WeightedEdges = new WeightedEdge<DataT>[EdgeStep];
         }
 
         /// <summary>
@@ -59,20 +65,20 @@ namespace GraphAlgorithms.Graph
 
             Id = id;
             EdgeStep = edgeStep;
-            WeightedEdges = new WeightedEdge[EdgeStep];
+            WeightedEdges = new WeightedEdge<DataT>[EdgeStep];
         }
 
-        /// <summary>
-        /// Метод добывляет грань к текущему узлу
-        /// </summary>
-        /// <param name="to">Узел в напралении которого направлена связь.</param>
-        /// <returns>Возвращает добавленную грань.</returns>
-        internal WeightedEdge AddEdge(NodeWithWeightedEdges to, long weight)
+    /// <summary>
+    /// Метод добывляет грань к текущему узлу
+    /// </summary>
+    /// <param name="to">Узел в напралении которого направлена связь.</param>
+    /// <returns>Возвращает добавленную грань.</returns>
+        internal WeightedEdge<DataT> AddEdge(NodeWithWeightedEdges<DataT> to, long weight)
         {
             if ((LastEdgeIndex + 1) == WeightedEdges.LongLength)
             {
-                WeightedEdge[] oldEdges = WeightedEdges;
-                WeightedEdge[] newEdges = new WeightedEdge[oldEdges.LongLength + EdgeStep];
+                WeightedEdge<DataT>[] oldEdges = WeightedEdges;
+                WeightedEdge<DataT>[] newEdges = new WeightedEdge<DataT>[oldEdges.LongLength + EdgeStep];
 
                 for (long i = 0; i < oldEdges.LongLength; i++)
                     newEdges[i] = oldEdges[i];
@@ -81,7 +87,7 @@ namespace GraphAlgorithms.Graph
             }
 
             LastEdgeIndex++;
-            WeightedEdges[LastEdgeIndex] = new WeightedEdge(to, weight);
+            WeightedEdges[LastEdgeIndex] = new WeightedEdge<DataT>(to, weight);
 
             return WeightedEdges[LastEdgeIndex];
         }

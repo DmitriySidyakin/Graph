@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public class NodeWithEdges
+    public class NodeWithEdges<DataT>
     {
         /// <summary>
         /// Идентификатор (индекс) узла в графе
@@ -24,6 +24,11 @@ namespace GraphAlgorithms.Graph
         public long EdgeStep { get; set; }
 
         /// <summary>
+        /// Данные узла
+        /// </summary>
+        public DataT? Data { get; set; }
+
+        /// <summary>
         /// Индекс последней добавленной грани в поле/массив Edges
         /// </summary>
         internal long LastEdgeIndex { get; set; } = -1;
@@ -31,7 +36,7 @@ namespace GraphAlgorithms.Graph
         /// <summary>
         /// Массив рёбер
         /// </summary>
-        internal Edge[] Edges { get; set; }
+        internal Edge<DataT>[] Edges { get; set; }
 
         /// <summary>
         /// Количество граней
@@ -46,7 +51,7 @@ namespace GraphAlgorithms.Graph
 
             Id = id;
             EdgeStep = EdgeDefaultStep;
-            Edges = new Edge[EdgeStep];
+            Edges = new Edge<DataT>[EdgeStep];
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace GraphAlgorithms.Graph
 
             Id = id;
             EdgeStep = edgeStep;
-            Edges = new Edge[EdgeStep];
+            Edges = new Edge<DataT>[EdgeStep];
         }
 
         /// <summary>
@@ -67,12 +72,12 @@ namespace GraphAlgorithms.Graph
         /// </summary>
         /// <param name="to">Узел в напралении которого направлена связь.</param>
         /// <returns>Возвращает добавленную грань.</returns>
-        internal Edge AddEdge(NodeWithEdges to)
+        internal Edge<DataT> AddEdge(NodeWithEdges<DataT> to)
         {
             if ((LastEdgeIndex + 1) == Edges.LongLength)
             {
-                Edge[] oldEdges = Edges;
-                Edge[] newEdges = new Edge[oldEdges.LongLength + EdgeStep];
+                Edge<DataT>[] oldEdges = Edges;
+                Edge<DataT>[] newEdges = new Edge<DataT>[oldEdges.LongLength + EdgeStep];
 
                 for (long i = 0; i < oldEdges.LongLength; i++)
                     newEdges[i] = oldEdges[i];
@@ -81,7 +86,7 @@ namespace GraphAlgorithms.Graph
             }
 
             LastEdgeIndex++;
-            Edges[LastEdgeIndex] = new Edge(to);
+            Edges[LastEdgeIndex] = new Edge<DataT>(to);
 
             return Edges[LastEdgeIndex];
         }

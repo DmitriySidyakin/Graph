@@ -1,14 +1,21 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace GraphAlgorithms.Graph
 {
-    public class WeightedEdge
+    public class WeightedEdge<DataT>
     {
-        public NodeWithWeightedEdges To { get; init; }
+        public NodeWithWeightedEdges<DataT> To { get; init; }
+
+        /// <summary>
+        /// Данные грани
+        /// </summary>
+        public DataT? Data { get; set; }
 
         public long Weight { get; set; } = long.MaxValue;
 
-        public WeightedEdge(NodeWithWeightedEdges to) { To = to; }
+        public WeightedEdge(NodeWithWeightedEdges<DataT> to) { To = to; }
 
-        public WeightedEdge(NodeWithWeightedEdges to, long weight) : this(to) { Weight = weight; }
+        public WeightedEdge(NodeWithWeightedEdges<DataT> to, long weight) : this(to) { Weight = weight; }
     }
 }

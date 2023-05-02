@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public partial class MultiDirectedWeightedGraph : WeightedGraph
+    public partial class MultiDirectedWeightedGraph<DataT> : WeightedGraph<DataT>
     {
         #region Graph Properties
 
@@ -44,11 +44,11 @@ namespace GraphAlgorithms.Graph
         /// <param name="from">Начальный узел маршрута</param>
         /// <param name="to">Конечный узел маршрута</param>
         /// <returns>true, если маршрут существует, иначе false</returns>
-        protected bool IsStronglyConnectedNodes(bool[][] Explored, NodeWithWeightedEdges from, NodeWithWeightedEdges to)
+        protected bool IsStronglyConnectedNodes(bool[][] Explored, NodeWithWeightedEdges<DataT> from, NodeWithWeightedEdges<DataT> to)
         {
             bool result = false;
 
-            foreach (WeightedEdge edge in from.WeightedEdges)
+            foreach (WeightedEdge<DataT> edge in from.WeightedEdges)
             {
                 if (!Explored[to.Id][from.Id])
                 {
@@ -78,7 +78,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="from">Начало связи</param>
         /// <param name="to">Конец связи</param>
         /// <returns>Созданная связь</returns>
-        public new WeightedEdge AddEdge(NodeWithWeightedEdges from, NodeWithWeightedEdges to, long weight)
+        public new WeightedEdge<DataT> AddEdge(NodeWithWeightedEdges<DataT> from, NodeWithWeightedEdges<DataT> to, long weight)
         {
             if (_LastNodeIndex < 1)
                 throw

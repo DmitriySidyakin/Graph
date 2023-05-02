@@ -1,13 +1,14 @@
 ﻿using GraphAlgorithms.Graph.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public partial class MultiDirectedGraph : Graph
+    public partial class MultiDirectedGraph<DataT> : Graph<DataT>
     {
         #region Graph Properties
 
@@ -32,7 +33,7 @@ namespace GraphAlgorithms.Graph
         /// <param name="from">Начало связи</param>
         /// <param name="to">Конец связи</param>
         /// <returns>Созданная связь</returns>
-        public new Edge AddEdge(NodeWithEdges from, NodeWithEdges to)
+        public new Edge<DataT> AddEdge(NodeWithEdges<DataT> from, NodeWithEdges<DataT> to)
         {
             if (_LastNodeIndex < 1)
                 throw

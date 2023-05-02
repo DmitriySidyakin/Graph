@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GraphAlgorithms.Graph
 {
-    public partial class Graph
+    public partial class Graph<DataT>
     {
-        public List<(List<NodeWithEdges>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
+        public List<(List<NodeWithEdges<DataT>>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
         {
-            NodeWithEdges startNode = GetNode(nodeIdStart);
-            NodeWithEdges endNode = GetNode(nodeIdEnd);
+            NodeWithEdges<DataT> startNode = GetNode(nodeIdStart);
+            NodeWithEdges<DataT> endNode = GetNode(nodeIdEnd);
 
-            List<(List<NodeWithEdges>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithEdges>(), startNode, endNode);
+            List<(List<NodeWithEdges<DataT>>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithEdges<DataT>>(), startNode, endNode);
 
             return paths;
         }
 
-        public (List<NodeWithEdges>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
+        public (List<NodeWithEdges<DataT>>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
         {
-            List<(List<NodeWithEdges>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
+            List<(List<NodeWithEdges<DataT>>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
             //PrintPaths(paths);
-            (List<NodeWithEdges>, long) shortestAcyclicPath;
+            (List<NodeWithEdges<DataT>>, long) shortestAcyclicPath;
             try
             {
                 shortestAcyclicPath = paths.MinBy((i) => i.Item2);
@@ -37,7 +38,7 @@ namespace GraphAlgorithms.Graph
 
         #region Debug methods
 
-        protected void PrintPaths(List<(List<NodeWithEdges>, long)> paths)
+        protected void PrintPaths(List<(List<NodeWithEdges<DataT>>, long)> paths)
         {
             long i = 0;
             foreach (var (list, weight) in paths)
@@ -55,11 +56,11 @@ namespace GraphAlgorithms.Graph
 
         #endregion
 
-        private List<(List<NodeWithEdges>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithEdges> currentPath, NodeWithEdges startNode, NodeWithEdges endNode)
+        private List<(List<NodeWithEdges<DataT>>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithEdges<DataT>> currentPath, NodeWithEdges<DataT> startNode, NodeWithEdges<DataT> endNode)
         {
             currentPath.Add(startNode);
 
-            List<(List<NodeWithEdges>, long)> acyclicPaths = new List<(List<NodeWithEdges>, long)>();
+            List<(List<NodeWithEdges<DataT>>, long)> acyclicPaths = new List<(List<NodeWithEdges<DataT>>, long)>();
 
             long resultWeight = startPathWeight;
 
@@ -75,7 +76,7 @@ namespace GraphAlgorithms.Graph
                         continue;
                     }
 
-                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + 1 /* или вместо 1 вес ребра */, new List<NodeWithEdges>(currentPath), edge.To, endNode));
+                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + 1 /* или вместо 1 вес ребра */, new List<NodeWithEdges<DataT>>(currentPath), edge.To, endNode));
                 }
 
                 return acyclicPaths;
@@ -92,23 +93,23 @@ namespace GraphAlgorithms.Graph
         }
     }
 
-    public partial class WeightedGraph
+    public partial class WeightedGraph<DataT>
     {
-        public List<(List<NodeWithWeightedEdges>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
+        public List<(List<NodeWithWeightedEdges<DataT>>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
         {
-            NodeWithWeightedEdges startNode = GetNode(nodeIdStart);
-            NodeWithWeightedEdges endNode = GetNode(nodeIdEnd);
+            NodeWithWeightedEdges<DataT> startNode = GetNode(nodeIdStart);
+            NodeWithWeightedEdges<DataT> endNode = GetNode(nodeIdEnd);
             
-            List<(List<NodeWithWeightedEdges>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithWeightedEdges>(), startNode, endNode);
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithWeightedEdges<DataT>>(), startNode, endNode);
 
             return paths;
         }
 
-        public (List<NodeWithWeightedEdges>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
+        public (List<NodeWithWeightedEdges<DataT>>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
         {
-            List<(List<NodeWithWeightedEdges>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
             //PrintPaths(paths);
-            (List<NodeWithWeightedEdges>, long) shortestAcyclicPath;
+            (List<NodeWithWeightedEdges<DataT>>, long) shortestAcyclicPath;
             try
             {
                 shortestAcyclicPath = paths.MinBy((i) => i.Item2);
@@ -123,7 +124,7 @@ namespace GraphAlgorithms.Graph
 
         #region Debug methods
 
-        protected void PrintPaths(List<(List<NodeWithWeightedEdges>, long)> paths)
+        protected void PrintPaths(List<(List<NodeWithWeightedEdges<DataT>>, long)> paths)
         {
             long i = 0;
             foreach(var (list, weight) in paths)
@@ -141,15 +142,15 @@ namespace GraphAlgorithms.Graph
 
         #endregion
 
-        private List<(List<NodeWithWeightedEdges>, long)> FindAcyclicPathsRecursively(
+        private List<(List<NodeWithWeightedEdges<DataT>>, long)> FindAcyclicPathsRecursively(
             long startPathWeight,
-            List<NodeWithWeightedEdges> currentPath,
-            NodeWithWeightedEdges startNode,
-            NodeWithWeightedEdges endNode)
+            List<NodeWithWeightedEdges<DataT>> currentPath,
+            NodeWithWeightedEdges<DataT> startNode,
+            NodeWithWeightedEdges<DataT> endNode)
         {
             currentPath.Add(startNode);
 
-            List<(List<NodeWithWeightedEdges>, long)> acyclicPaths = new List<(List<NodeWithWeightedEdges>, long)>();
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> acyclicPaths = new List<(List<NodeWithWeightedEdges<DataT>>, long)>();
 
             long resultWeight = startPathWeight;
 
@@ -167,7 +168,7 @@ namespace GraphAlgorithms.Graph
                         
                     acyclicPaths.AddRange(
                         FindAcyclicPathsRecursively(resultWeight + edge.Weight /* или 1 в невзвешенном графе */
-                        , new List<NodeWithWeightedEdges>(currentPath), edge.To, endNode)
+                        , new List<NodeWithWeightedEdges<DataT>>(currentPath), edge.To, endNode)
                         ); 
                 }
 
@@ -185,23 +186,23 @@ namespace GraphAlgorithms.Graph
 
     }
 
-    public partial class MultiDirectedGraph
+    public partial class MultiDirectedGraph<DataT>
     {
-        public new List<(List<NodeWithEdges>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
+        public new List<(List<NodeWithEdges<DataT>>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
         {
-            NodeWithEdges startNode = GetNode(nodeIdStart);
-            NodeWithEdges endNode = GetNode(nodeIdEnd);
+            NodeWithEdges<DataT> startNode = GetNode(nodeIdStart);
+            NodeWithEdges<DataT> endNode = GetNode(nodeIdEnd);
 
-            List<(List<NodeWithEdges>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithEdges>(), startNode, endNode);
+            List<(List<NodeWithEdges<DataT>>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithEdges<DataT>>(), startNode, endNode);
             //PrintPaths(paths);
             return paths;
         }
 
-        public new (List<NodeWithEdges>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
+        public new (List<NodeWithEdges<DataT>>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
         {
-            List<(List<NodeWithEdges>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
+            List<(List<NodeWithEdges<DataT>>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
 
-            (List<NodeWithEdges>, long) shortestAcyclicPath;
+            (List<NodeWithEdges<DataT>>, long) shortestAcyclicPath;
             try
             {
                 shortestAcyclicPath = paths.MinBy((i) => i.Item2);
@@ -216,7 +217,7 @@ namespace GraphAlgorithms.Graph
 
         #region Debug methods
 
-        protected new void PrintPaths(List<(List<NodeWithEdges>, long)> paths)
+        protected new void PrintPaths(List<(List<NodeWithEdges<DataT>>, long)> paths)
         {
             long i = 0;
             foreach (var (list, weight) in paths)
@@ -234,11 +235,11 @@ namespace GraphAlgorithms.Graph
 
         #endregion
 
-        private List<(List<NodeWithEdges>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithEdges> currentPath, NodeWithEdges startNode, NodeWithEdges endNode)
+        private List<(List<NodeWithEdges<DataT>>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithEdges<DataT>> currentPath, NodeWithEdges<DataT> startNode, NodeWithEdges<DataT> endNode)
         {
             currentPath.Add(startNode);
 
-            List<(List<NodeWithEdges>, long)> acyclicPaths = new List<(List<NodeWithEdges>, long)>();
+            List<(List<NodeWithEdges<DataT>>, long)> acyclicPaths = new List<(List<NodeWithEdges<DataT>>, long)>();
 
             long resultWeight = startPathWeight;
 
@@ -253,7 +254,7 @@ namespace GraphAlgorithms.Graph
                     {
                         continue;
                     }
-                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + 1, new List<NodeWithEdges>(currentPath), edge.To, endNode));
+                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + 1, new List<NodeWithEdges<DataT>>(currentPath), edge.To, endNode));
                 }
 
                 return acyclicPaths;
@@ -269,23 +270,23 @@ namespace GraphAlgorithms.Graph
         }
     }
 
-    public partial class MultiDirectedWeightedGraph
+    public partial class MultiDirectedWeightedGraph<DataT>
     {
-        public new List<(List<NodeWithWeightedEdges>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
+        public new List<(List<NodeWithWeightedEdges<DataT>>, long)> FindAcyclicPaths(long nodeIdStart, long nodeIdEnd)
         {
-            NodeWithWeightedEdges startNode = GetNode(nodeIdStart);
-            NodeWithWeightedEdges endNode = GetNode(nodeIdEnd);
+            NodeWithWeightedEdges<DataT> startNode = GetNode(nodeIdStart);
+            NodeWithWeightedEdges<DataT> endNode = GetNode(nodeIdEnd);
 
-            List<(List<NodeWithWeightedEdges>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithWeightedEdges>(), startNode, endNode);
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> paths = FindAcyclicPathsRecursively(0, new List<NodeWithWeightedEdges<DataT>>(), startNode, endNode);
             //PrintPaths(paths);
             return paths;
         }
 
-        public new (List<NodeWithWeightedEdges>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
+        public new (List<NodeWithWeightedEdges<DataT>>, long) FindAcyclicShortestPath(long nodeIdStart, long nodeIdEnd)
         {
-            List<(List<NodeWithWeightedEdges>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> paths = FindAcyclicPaths(nodeIdStart, nodeIdEnd);
 
-            (List<NodeWithWeightedEdges>, long) shortestAcyclicPath;
+            (List<NodeWithWeightedEdges<DataT>>, long) shortestAcyclicPath;
             try
             {
                 shortestAcyclicPath = paths.MinBy((i) => i.Item2);
@@ -300,7 +301,7 @@ namespace GraphAlgorithms.Graph
 
         #region Debug methods
 
-        protected new void PrintPaths(List<(List<NodeWithWeightedEdges>, long)> paths)
+        protected new void PrintPaths(List<(List<NodeWithWeightedEdges<DataT>>, long)> paths)
         {
             long i = 0;
             foreach (var (list, weight) in paths)
@@ -318,11 +319,11 @@ namespace GraphAlgorithms.Graph
 
         #endregion
 
-        private List<(List<NodeWithWeightedEdges>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithWeightedEdges> currentPath, NodeWithWeightedEdges startNode, NodeWithWeightedEdges endNode)
+        private List<(List<NodeWithWeightedEdges<DataT>>, long)> FindAcyclicPathsRecursively(long startPathWeight, List<NodeWithWeightedEdges<DataT>> currentPath, NodeWithWeightedEdges<DataT> startNode, NodeWithWeightedEdges<DataT> endNode)
         {
             currentPath.Add(startNode);
 
-            List<(List<NodeWithWeightedEdges>, long)> acyclicPaths = new List<(List<NodeWithWeightedEdges>, long)>();
+            List<(List<NodeWithWeightedEdges<DataT>>, long)> acyclicPaths = new List<(List<NodeWithWeightedEdges<DataT>>, long)>();
 
             long resultWeight = startPathWeight;
 
@@ -338,7 +339,7 @@ namespace GraphAlgorithms.Graph
                         continue;
                     }
 
-                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + edge.Weight, new List<NodeWithWeightedEdges>(currentPath), edge.To, endNode));
+                    acyclicPaths.AddRange(FindAcyclicPathsRecursively(resultWeight + edge.Weight, new List<NodeWithWeightedEdges<DataT>>(currentPath), edge.To, endNode));
                 }
 
                 return acyclicPaths;
