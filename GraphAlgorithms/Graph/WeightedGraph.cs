@@ -186,6 +186,21 @@ namespace GraphAlgorithms.Graph
             return node.WeightedEdges[edgeIndex];
         }
 
+        /// <summary>
+        /// Метод получает все листья дерева с корнем, т.е. узлы не являющиеся ветвями.
+        /// </summary>
+        /// <returns>Все листья дерева с корнем, т.е. узлы не являющиеся ветвями.</returns>
+        public NodeWithWeightedEdges<DataT>[] GetLeafsAndRoot()
+        {
+            List<NodeWithWeightedEdges<DataT>> result = new();
+            foreach (var n in Nodes)
+            {
+                if (n != null && n.EdgeCount > 1) { result.Add(n); }
+            }
+
+            return result.ToArray();
+        }
+
         #endregion
 
         #region Graph Properties

@@ -1,5 +1,5 @@
 ﻿using GraphAlgorithms.Graph.Exceptions;
-using System.Linq; 
+using System.Linq;
 
 namespace GraphAlgorithms.Graph
 {
@@ -100,14 +100,15 @@ namespace GraphAlgorithms.Graph
         /// Метод добавляет новый узел и возвращает его.
         /// </summary>
         /// <returns>Последний добавленный узел</returns>
-        public NodeWithEdges<DataT> AddEmptyNode() {
+        public NodeWithEdges<DataT> AddEmptyNode()
+        {
 
-            if((_LastNodeIndex + 1) == Nodes.LongLength)
+            if ((_LastNodeIndex + 1) == Nodes.LongLength)
             {
                 NodeWithEdges<DataT>[] oldNodes = Nodes;
                 NodeWithEdges<DataT>[] newNodes = new NodeWithEdges<DataT>[oldNodes.LongLength + NodeStep];
 
-                for(long i = 0; i < oldNodes.LongLength; i++)
+                for (long i = 0; i < oldNodes.LongLength; i++)
                     newNodes[i] = oldNodes[i];
 
                 Nodes = newNodes;
@@ -142,7 +143,7 @@ namespace GraphAlgorithms.Graph
             var edge1 = Nodes[from.Id].AddEdge(Nodes[to.Id]);
             var edge2 = Nodes[to.Id].AddEdge(Nodes[from.Id]);
 
-            return new[] {edge1, edge2};
+            return new[] { edge1, edge2 };
         }
 
         #endregion
@@ -157,7 +158,7 @@ namespace GraphAlgorithms.Graph
         /// <exception cref="GraphException">Генерируется, если входной индекс не существует в массиве узлов.</exception>
         public NodeWithEdges<DataT> GetNode(long nodeIndex)
         {
-            if(nodeIndex > _LastNodeIndex || nodeIndex < 0)
+            if (nodeIndex > _LastNodeIndex || nodeIndex < 0)
                 throw
                     new GraphException("Индекс узла не существует!", new ArgumentOutOfRangeException(nameof(nodeIndex)));
 
@@ -186,6 +187,21 @@ namespace GraphAlgorithms.Graph
             return node.Edges[edgeIndex];
         }
 
+        /// <summary>
+        /// Метод получает все листья дерева с корнем, т.е. узлы не являющиеся ветвями.
+        /// </summary>
+        /// <returns>Все листья дерева с корнем, т.е. узлы не являющиеся ветвями.</returns>
+        public NodeWithEdges<DataT>[] GetLeafsAndRoot()
+        {
+            List<NodeWithEdges<DataT>> result = new();
+            foreach (var n in Nodes)
+            {
+                if (n != null && n.EdgeCount > 1) { result.Add(n); }
+            }
+
+            return result.ToArray();
+        }
+
         #endregion
 
         #region Graph Properties
@@ -197,24 +213,24 @@ namespace GraphAlgorithms.Graph
         {
             get
             {
-                bool [] explored = new bool[LastNodeIndex + 1];
-                
-                if(LastNodeIndex > 0) explored[0] = true;
+                bool[] explored = new bool[LastNodeIndex + 1];
 
-                for(long nodeIndex = 0; nodeIndex <= LastNodeIndex; nodeIndex++)
+                if (LastNodeIndex > 0) explored[0] = true;
+
+                for (long nodeIndex = 0; nodeIndex <= LastNodeIndex; nodeIndex++)
                 {
-                    for(long edgeIndex = 0; edgeIndex <= Nodes[nodeIndex].LastEdgeIndex; edgeIndex++)
+                    for (long edgeIndex = 0; edgeIndex <= Nodes[nodeIndex].LastEdgeIndex; edgeIndex++)
                     {
                         explored[Nodes[nodeIndex].Edges[edgeIndex].To.Id] = true;
                     }
                 }
 
-                if(explored.Length > 0)
+                if (explored.Length > 0)
                 {
                     return (from exp in explored
                             where exp == false
                             select exp).Count() == 0;
-                          
+
                 }
                 else
                 {
@@ -237,7 +253,7 @@ namespace GraphAlgorithms.Graph
         {
             T[][] result = new T[NodeCount][];
 
-            for(var i = 0; i < NodeCount; i++)
+            for (var i = 0; i < NodeCount; i++)
             {
                 if (Nodes[i].EdgeCount == 0)
                     continue;
